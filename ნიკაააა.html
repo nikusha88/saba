@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>საბას საძიებო სისტემა</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            padding: 50px;
+        }
+
+        .search-box {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 2px solid #4CAF50;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .search-btn:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .result-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+
+        .result-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-container ul li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-container ul li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>საბას საძიებო სისტემა</h1>
+        <p>პოვო და მოძიე მარტივად</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" class="search-box" id="searchInput" placeholder="ძებნა..." onkeydown="checkEnter(event)">
+        <button class="search-btn" onclick="searchText()">ძებნა</button>
+    </div>
+
+    <div class="result-container" id="resultContainer">
+        <h2>შედეგები:</h2>
+        <ul id="resultList">
+            <!-- Search results will be listed here -->
+        </ul>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 საბას საძიებო სისტემა. ყველა უფლება დაცულია.</p>
+    </footer>
+
+    <script>
+        // გაზრდილია წინადადებების რაოდენობა 30 ათამდე
+        const predefinedSentences = [
+            'მოგესალმებიტ რით შემიძლია დაგეხმაროთ?',
+            'ნიკა გაემგზავრა თბილისში',
+            'გიორგი სწავლობს პროგრამირებას',
+            'მარიამი ეძებს ახალ სამსახურს',
+            'თამარი აგროვებს წიგნებს',
+            'დავითს სურს ახალი კომპიუტერის შეძენა',
+            'ლიზა წერს წერილს',
+            'ანა ეძებს ახალ მეგობრებს',
+            'მარიამი არ უყურებს ტელევიზორს',
+            'გიორგი და ნიკა მიემგზავრებიან ზღვაში',
+            'კახა სწავლობს უცხო ენებს',
+            'მარიამი ეწევა სპორტს',
+            'გიომ დაიწყო ახალი სამუშაო',
+            'თამარმა გამოიძია ახალი კინო',
+            'თამარი თაობის თვალსაზრისებს მოისმენს',
+            'თამარამ მეგობარი სტუმრად მიიღო',
+            'მარიამმა მხატვრობა დაიწყო',
+            'გიორგი ავარიაში მოყვა',
+            'ნიკამ დაიწყო საკუთარი ბიზნესი',
+            'გიორგი უახლოეს დროში დაემშვიდობა მეგობრებს',
+            'დავითმა მოიპოვა გამარჯვება',
+            'ვიკა ფიქრობდა, რომ დაკარგულიყო',
+            'ანამ გადაწყვიტა შეცვალოს სამყოფობა',
+            'ნიკამ გაიარა თოკზე სიარული',
+            'შოთა სწავლობს კულინარიას',
+            'თამარი იღებს სიამოვნებას მუსიკისგან',
+            'მარიამი და ნიკა ცდილობენ ჩაერთონ პროექტში',
+            'მარიამი გეგმავს მოგზაურობას',
+            'გიორგი მიდის სცენაზე',
+            'ბექა ისწავლა რთული ტექნოლოგიები',
+            'ნიკამ მოუსმინა დათუნიას'
+        ];
+
+        function searchText() {
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            var resultContainer = document.getElementById('resultContainer');
+            var resultList = document.getElementById('resultList');
+            resultList.innerHTML = ''; // Clear previous results
+
+            if (input.trim() === '') {
+                resultContainer.style.display = 'none';
+                return;
+            }
+
+            // Filter predefined sentences to find matches with input text
+            var filteredSentences = predefinedSentences.filter(function(sentence) {
+                return sentence.toLowerCase().includes(input);
+            });
+
+            // Check if filtering works correctly
+            console.log("Filtered sentences:", filteredSentences);
+
+            if (filteredSentences.length > 0) {
+                resultContainer.style.display = 'block';
+                filteredSentences.forEach(function(sentence) {
+                    var listItem = document.createElement('li');
+                    listItem.textContent = sentence;
+                    resultList.appendChild(listItem);
+                });
+            } else {
+                resultContainer.style.display = 'none';
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                searchText(); // Trigger search when Enter is pressed
+            }
+        }
+    </script>
+
+</body>
+</html>
